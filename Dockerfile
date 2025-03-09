@@ -17,4 +17,6 @@ COPY . /app/
 EXPOSE 5000
 
 # Tell Docker to run the app when the container starts
-CMD ["python", "app.py"]
+CMD ["python", "app/__init__.py"]
+
+
