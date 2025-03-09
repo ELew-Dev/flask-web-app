@@ -4,19 +4,18 @@ FROM python:3.9
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the requirements.txt into the container so I can install the dependencies
+# Copy the requirements.txt into the container
 COPY requirements.txt /app/
 
 # Install all the dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the app's code into the container
-COPY . /app/
+# Copy the 'app' folder (not just files) into the container
+COPY app /app/
 
 # Expose port 5000 because Flask runs on it by default
 EXPOSE 5000
 
 # Tell Docker to run the app when the container starts
-CMD ["python", "app/__init__.py"]
-
+CMD ["python", "-m", "app"]
 
