@@ -72,11 +72,52 @@
   together was concatenating the outputs—possibly affecting execution.  
 - Testing file execution separately to verify.  
 
-### **Next Steps:**  
-- Creating an isolated test project to debug the issue.  
-- Testing on a backup computer.  
-
 ## **Session 3: Testing on Windows**  
 - Switched to a Windows machine to see if the issue is platform-specific.  
-- Continuing to debug and compare results between macOS and Windows.  
+- Continuing to debug and compare results between macOS and Windows.   
+- Encountered: **"WSL2 is not supported with the current machine configuration."**  
+- Decided to try a virtual machine instead.  
+- **Installed VirtualBox and Ubuntu** to create an isolated environment for Docker testing.  
+- Named VM: **Ubuntu Docker Test**, running on **Linux 64-bit**.  
+- Allocated **4GB RAM and 2 CPUs** to maintain efficiency.  
+- **Issue:** Navigating Ubuntu was too cumbersome for the project’s focus.  
+- **Decision:** Move away from VirtualBox and consider **Colima** or **Rancher** as alternatives.  
+
+## **Session 3.5: Switching to Colima**  
+- Chose **Colima** over VirtualBox for a streamlined Docker setup on macOS.  
+- Installed Colima via Homebrew:  
+  ```sh
+  brew install colima  
+  brew services start colima  
+  ```
+- Configured **Docker to run through Colima** but faced **restricted permissions issues** with the Docker Daemon.  
+- Fixed the permission issue by updating socket permissions.  
+- Changed **Colima context** and ran `docker info` to confirm setup.  
+- **Still encountering:**  
+  - `ImportError: attempted relative import with no known parent package`  
+  - **Confirmed the issue is with the application code, not the environment.**  
+- Adjusted `__init__.py` and `routes.py`, which finally resolved the error.  
+
+## **Session 4: Debugging Container Issues**  
+- The container **started but immediately exited** (`Exited(0)` and `Exited(1)`).  
+- Ran `python __init__.py` inside the container – **no visible errors**.  
+- **Modified `__init__.py` to run on `0.0.0.0`** → Successfully accessed the app, but encountered **404 errors**.  
+- Created a **new directory** `flask-web-app-reset` and copied:  
+  - `Dockerfile`  
+  - `requirements.txt`  
+  - `app/` folder  
+- Switched Dockerfile base image to **Python 3.9 Slim Buster** to avoid compatibility issues.  
+
+### **Solutions Found:**  
+1. **Used Ubuntu as the base image** → Resolved Python base image inconsistencies.  
+2. **Added `--break-system-packages` flag** → Fixed pip3 installation errors on Ubuntu.  
+3. **Set `host='0.0.0.0'` in `simple_app.py`** → Allowed Flask to listen on all network interfaces within the container.  
+
+## **Session 5: Applying Fixes to the Main Web App**  
+- Now that the reset version is working, applying the same changes to the **original web app** repository.  
+
+
+
+
+
 
