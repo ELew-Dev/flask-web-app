@@ -1,20 +1,15 @@
-# Use the official Python 3.9 slim image as the base
-FROM python:3.9
+FROM ubuntu:latest
 
-# Set the working directory inside the container
+RUN apt-get update && apt-get install -y python3 python3-pip
+
 WORKDIR /app
 
-# Copy the requirements.txt into the container
 COPY requirements.txt /app/
 
-# Install all the dependencies from requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt
 
-# Copy the contents of the 'app' folder into the container's /app directory
 COPY app/ .
 
-# Expose port 5000 because Flask runs on it by default
 EXPOSE 5000
 
-# Set the entry point to run your Flask application
-CMD ["python", "__init__.py"]
+CMD ["python3", "simple_app.py"]
